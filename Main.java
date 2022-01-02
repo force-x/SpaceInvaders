@@ -1,23 +1,38 @@
-import org.opencv.core.*;
+package Game;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
 
 public class Main {
-
-	static {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	}
 	
-	/**Enter argument true if you would like to display what the computer "sees" **/
+	public static File tmpDir;
+	
+	
 	public static void main(String[] args) {
 		
+
+		String libName = "opencv_java453.dll"; // The name of the file in resources/ dir
+		URL url = Main.class.getResource("/" + libName);
+		try {
+			tmpDir = Files.createTempDirectory("my-native-lib").toFile();
+			tmpDir.deleteOnExit();
+			File nativeLibTmpFile = new File(tmpDir, libName);
+			nativeLibTmpFile.deleteOnExit();
+			try (InputStream in = url.openStream()) {
+			    Files.copy(in, nativeLibTmpFile.toPath());
+			}
+			System.load(nativeLibTmpFile.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		
 		Player player=new Player();
-		
-		if(args.length!=0 && args[0].equals("true")) {
-			player.playGame(true);
-		}
-		else {
-			player.playGame(false);
-		}
-		
-		
+		player.playGame(true);
 	}
 }

@@ -1,9 +1,14 @@
+package Game;
 import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -31,21 +36,51 @@ public class Player {
 		//Get all the templates
 				
 		//Best player template
-		File image=new File("./src/Player.png");		
-		Mat player=Imgcodecs.imread(image.getAbsolutePath(),0);
+		URL url1 = Main.class.getResource("/" + "Player.PNG");
+		File playerFile=null;
+		try {
+			playerFile= new File(Main.tmpDir, "Player.PNG");
+			playerFile.deleteOnExit();
+			try (InputStream in = url1.openStream()) {
+			    Files.copy(in, playerFile.toPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		Mat player=Imgcodecs.imread(playerFile.getAbsolutePath(),0);
 		Mat best_player=new Mat(20,30,0);
 		Imgproc.resize(player,best_player, best_player.size());
 				
 		//Best nail bullet
-		image=new File("./src/Bullet1.png");
-		Mat nailBullet=Imgcodecs.imread(image.getAbsolutePath(),0);
+		URL url2 = Main.class.getResource("/" + "Bullet1.PNG");
+		File Bullet1File=null;
+		try {
+			Bullet1File= new File(Main.tmpDir, "Bullet1.PNG");
+			Bullet1File.deleteOnExit();
+			try (InputStream in = url2.openStream()) {
+			    Files.copy(in,Bullet1File.toPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		Mat nailBullet=Imgcodecs.imread(Bullet1File.getAbsolutePath(),0);
 		Mat best_nailBullet=new Mat(26,18,0);
 		Imgproc.resize(nailBullet,best_nailBullet, best_nailBullet.size());
 		best_nailBullet=best_nailBullet.submat(4,20,5,14);
 				
 		//best squiggly bullet and flipped squiggly bullet	
-		image=new File("./src/Bullet2.png");
-		Mat squigglyBullet=Imgcodecs.imread(image.getAbsolutePath(),0);
+		URL url3= Main.class.getResource("/" + "Bullet2.PNG");
+		File Bullet2File=null;
+		try {
+			Bullet2File= new File(Main.tmpDir, "Bullet2.PNG");
+			Bullet2File.deleteOnExit();
+			try (InputStream in = url3.openStream()) {
+			    Files.copy(in, Bullet2File.toPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		Mat squigglyBullet=Imgcodecs.imread(Bullet2File.getAbsolutePath(),0);
 		Mat best_squigglyBullet=new Mat(28,19,0);
 		Imgproc.resize(squigglyBullet,best_squigglyBullet, best_squigglyBullet.size());
 		best_squigglyBullet=best_squigglyBullet.submat(4,27,5,17);	
@@ -53,8 +88,18 @@ public class Player {
 		Core.flip(best_squigglyBullet,reverse_squigglyBullet,1);
 
 		//best fast bullet
-		image=new File("./src/Bullet3.png");
-		Mat fastBullet=Imgcodecs.imread(image.getAbsolutePath(),0);
+		URL url4 = Main.class.getResource("/" + "Bullet3.PNG");
+		File Bullet3File=null;
+		try {
+			Bullet3File= new File(Main.tmpDir, "Bullet3.PNG");
+			Bullet3File.deleteOnExit();
+			try (InputStream in = url4.openStream()) {
+			    Files.copy(in, Bullet3File.toPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Mat fastBullet=Imgcodecs.imread(Bullet3File.getAbsolutePath(),0);
 		Mat best_fastBullet=new Mat(27,18,0);
 		Imgproc.resize(fastBullet,best_fastBullet, best_fastBullet.size());
 		best_fastBullet=best_fastBullet.submat(4,21,2,13);
@@ -82,6 +127,7 @@ public class Player {
 			boolean onLeftEdge=false;
 			boolean onRightEdge=false;
 			
+			/*
 			//this allows you to stop playing by pressing 's'
 			try {
 	            GlobalScreen.registerNativeHook();
@@ -93,7 +139,7 @@ public class Player {
 	        }
 
 	        GlobalScreen.addNativeKeyListener(new KeyListener());
-			
+			*/
 			
 			//sole purpose of this thread is to shoot
 			Thread shootingThread=new Thread() {
@@ -147,9 +193,7 @@ public class Player {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-					
-					
-					
+							
 			while(keepPlaying){
 											
 				//take screenshot of game
